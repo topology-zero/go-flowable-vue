@@ -11,7 +11,7 @@
 import formSetup from './form_setup'
 import fieldBaseSetup from './field_base_setup'
 import fieldValidateSetup from './filed_validate_setup'
-import { add, edit, getDetail } from './api'
+import { add, getDetail } from './api'
 
 import rules from './rule'
 
@@ -31,6 +31,12 @@ export default {
         this.$refs.designer.removeMenuItem('div')
 
         this.$refs.designer.form.rule = formSetup()
+        if (this.$route.query.id) {
+            this.$refs.designer.form.rule[0].props = {
+                disabled: true
+            }
+        }
+        this.$refs.designer.form.rule
         this.$refs.designer.form.option.submitBtn = {
             innerText: '保存',
             size: 'small'
@@ -65,10 +71,10 @@ export default {
     },
     methods: {
         async _getData() {
-            if (!this.$route.query.key) {
+            if (!this.$route.query.id) {
                 return
             }
-            const { data } = await getDetail(this.$route.query.key, this.$route.query.version)
+            const { data } = await getDetail(this.$route.query.id)
             this.$refs.designer.setRule(JSON.parse(data.rule))
             this.$refs.designer.setOption(JSON.parse(data.option))
         },
@@ -78,16 +84,13 @@ export default {
                 return
             }
             const data = {
+                key: f.formKey,
                 name: f.formName,
                 desc: f.formDesc,
                 rule: JSON.stringify(this.$refs.designer.getRule()),
                 option: JSON.stringify(this.$refs.designer.getOption())
             }
-            if (this.$route.query.key) {
-                await edit(this.$route.query.key, this.$route.query.version, data)
-            } else {
-                await add(data)
-            }
+            await add(data)
             this.$message.success('成功')
             this.$router.back()
         }

@@ -46,7 +46,7 @@
                     <el-button v-permission="`flow_form:edit`"
                                size="mini"
                                type="primary"
-                               @click="$router.push(`/flow/formdetail?key=${row.key}&version=${row.version}`)">编辑
+                               @click="$router.push(`/flow/formdetail?id=${row.id}`)">编辑
                     </el-button>
                     <el-button v-permission="`flow_form:del`"
                                size="mini"

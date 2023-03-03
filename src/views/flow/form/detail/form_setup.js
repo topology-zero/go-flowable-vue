@@ -2,6 +2,15 @@ export default function formSetup() {
     return [
         {
             type: 'input',
+            field: 'formKey',
+            value: '',
+            title: '表单key',
+            effect: {
+                required: true
+            }
+        },
+        {
+            type: 'input',
             field: 'formName',
             value: '',
             title: '表单名',
