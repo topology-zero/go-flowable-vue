@@ -25,7 +25,7 @@
                   border
                   :data="list">
             <el-table-column label="ID"
-                             prop="deploymentId"
+                             prop="id"
                              align="center" />
             <el-table-column align="center"
                              label="表单用途"
@@ -87,7 +87,7 @@ export default {
         // 删除流程外置表单
         async handleDel(info) {
             await this.$confirm('删除流程外置表单不可恢复', '警告')
-            const { message } = await del(info.deploymentId)
+            const { message } = await del(info.id)
             this.$message.success(message)
             this._getData(this.params)
         },
