@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
 // 获取流程外置表单详情
-export function getDetail(id) {
+export function getDetail(key, version) {
     return request({
-        url: '/flow/form/' + id,
+        url: `/flow/form/${key}/${version}`,
         method: 'get'
     })
 }
@@ -18,9 +18,9 @@ export function add(data) {
 }
 
 // 编辑流程外置表单
-export function edit(id, data) {
+export function edit(key, version, data) {
     return request({
-        url: '/flow/form/' + id,
+        url: `/flow/form/${key}/${version}`,
         method: 'put',
         data
     })

@@ -17,11 +17,6 @@ import rules from './rule'
 
 export default {
     name: 'FlowForm',
-    data() {
-        return {
-            test: 'xxx'
-        }
-    },
     mounted() {
         this.$refs.designer.removeMenuItem('colorPicker')
         this.$refs.designer.removeMenuItem('switch')
@@ -70,10 +65,10 @@ export default {
     },
     methods: {
         async _getData() {
-            if (!this.$route.query.id) {
+            if (!this.$route.query.key) {
                 return
             }
-            const { data } = await getDetail(this.$route.query.id)
+            const { data } = await getDetail(this.$route.query.key, this.$route.query.version)
             this.$refs.designer.setRule(JSON.parse(data.rule))
             this.$refs.designer.setOption(JSON.parse(data.option))
         },
@@ -84,11 +79,12 @@ export default {
             }
             const data = {
                 name: f.formName,
+                desc: f.formDesc,
                 rule: JSON.stringify(this.$refs.designer.getRule()),
                 option: JSON.stringify(this.$refs.designer.getOption())
             }
-            if (this.$route.query.id) {
-                await edit(this.$route.query.id, data)
+            if (this.$route.query.key) {
+                await edit(this.$route.query.key, this.$route.query.version, data)
             } else {
                 await add(data)
             }

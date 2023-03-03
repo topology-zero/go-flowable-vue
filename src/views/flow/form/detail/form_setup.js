@@ -10,6 +10,15 @@ export default function formSetup() {
             }
         },
         {
+            type: 'input',
+            field: 'formDesc',
+            value: '',
+            title: '表单描述',
+            effect: {
+                required: true
+            }
+        },
+        {
             type: 'radio',
             field: 'labelPosition',
             value: 'left',

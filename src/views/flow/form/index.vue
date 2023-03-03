@@ -25,12 +25,20 @@
                   border
                   :data="list">
             <el-table-column label="ID"
-                             prop="id"
-                             align="center"
-                             width="60px" />
+                             prop="deploymentId"
+                             align="center" />
             <el-table-column align="center"
                              label="表单用途"
                              prop="name" />
+            <el-table-column align="center"
+                             label="表单版本">
+                <template slot-scope="{row}">
+                    <el-tag type="success">v{{ row.version }}</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column align="center"
+                             label="表单描述"
+                             prop="description" />
             <el-table-column align="center"
                              width="170px"
                              label="操作">
@@ -38,7 +46,7 @@
                     <el-button v-permission="`flow_form:edit`"
                                size="mini"
                                type="primary"
-                               @click="$router.push('/flow/formdetail?id=' + row.id)">编辑
+                               @click="$router.push(`/flow/formdetail?key=${row.key}&version=${row.version}`)">编辑
                     </el-button>
                     <el-button v-permission="`flow_form:del`"
                                size="mini"
@@ -79,7 +87,7 @@ export default {
         // 删除流程外置表单
         async handleDel(info) {
             await this.$confirm('删除流程外置表单不可恢复', '警告')
-            const { message } = await del(info.id)
+            const { message } = await del(info.deploymentId)
             this.$message.success(message)
             this._getData(this.params)
         },
