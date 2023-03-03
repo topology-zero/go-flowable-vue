@@ -6,8 +6,8 @@ export function getFormList() {
     })
 }
 
-export function getDetail(key, version) {
+export function getDetail(id) {
     return request({
-        url: `/base/flowformveiw/${key}/${version}`
+        url: `/base/flowformveiw/${id}`
     })
 }

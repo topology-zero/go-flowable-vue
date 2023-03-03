@@ -109,7 +109,7 @@ export default {
         // 预览表单
         async viewForm(row) {
             this.innerVisible = true
-            const { data } = await getDetail(row.key, row.version)
+            const { data } = await getDetail(row.id)
             this.formOption = JSON.parse(data.option)
             this.formOption.submitBtn = false
             this.formRule = JSON.parse(data.rule)
@@ -121,7 +121,7 @@ export default {
         },
         // 选择表单
         chooseForm(row) {
-            this.updateElementExtensions(row.key, row.version, row.name, row.description)
+            this.updateElementExtensions(row.key, row.id, row.name, row.description)
             this.dialogVisible = false
             this.chooseList = [row]
         },
@@ -138,21 +138,21 @@ export default {
             this.bpmnElement = window.bpmnInstances.bpmnElement
 
             const key = this.bpmnElement.businessObject.get('flowable:formKey')
-            const version = this.bpmnElement.businessObject.get('flowable:formVersion')
+            const id = this.bpmnElement.businessObject.get('flowable:formId')
             const name = this.bpmnElement.businessObject.get('flowable:formName')
             const desc = this.bpmnElement.businessObject.get('flowable:formDesc')
             if (key) {
-                this.chooseList = [{ key, version, name, description: desc }]
+                this.chooseList = [{ key, id, name, description: desc }]
             }
-            this.updateElementExtensions(key, version, name, desc)
+            this.updateElementExtensions(key, id, name, desc)
         },
         // 更新 XML 文件
-        updateElementExtensions(key, version, name, desc) {
+        updateElementExtensions(key, id, name, desc) {
             let attrObj = {}
             if (key) {
                 attrObj = {
                     'flowable:formKey': key,
-                    'flowable:formVersion': version,
+                    'flowable:formId': id,
                     'flowable:formName': name,
                     'flowable:formDesc': desc
                 }
