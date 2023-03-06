@@ -21,7 +21,8 @@ import alert from './alert'
 import span from './span'
 import space from './space'
 import tab from './tab'
-import button from './button'
+import accpet from './accpet'
+import reject from './reject'
 import editor from './editor'
 
 const ruleList = {
@@ -48,7 +49,8 @@ const ruleList = {
     [alert.name]: alert,
     [span.name]: span,
     [space.name]: space,
-    [button.name]: button,
+    [accpet.name]: accpet,
+    [reject.name]: reject,
     [editor.name]: editor
 }
 

@@ -28,6 +28,23 @@ export default {
         this.$refs.designer.removeMenuItem('cascader')
         this.$refs.designer.removeMenuItem('fc-editor')
         this.$refs.designer.removeMenuItem('el-transfer')
+        this.$refs.designer.removeMenuItem('el-button')
+
+        this.$refs.designer.addComponent(rules.input)
+        this.$refs.designer.addComponent(rules.inputNumber)
+        this.$refs.designer.addComponent(rules.radio)
+        this.$refs.designer.addComponent(rules.checkbox)
+        this.$refs.designer.addComponent(rules.select)
+        this.$refs.designer.addComponent(rules.timePicker)
+        this.$refs.designer.addComponent(rules.datePicker)
+        this.$refs.designer.addComponent(rules.accpet)
+        this.$refs.designer.addComponent(rules.reject)
+
+        this.$refs.designer.addMenu({
+            name: 'opt',
+            title: '审批组件',
+            list: [rules.accpet, rules.reject]
+        })
 
         this.$refs.designer.form.rule = formSetup()
         if (this.$route.query.id) {
@@ -58,15 +75,6 @@ export default {
 
         this.$refs.designer.baseForm.rule = fieldBaseSetup()
         this.$refs.designer.validateForm.rule = fieldValidateSetup()
-
-        this.$refs.designer.addComponent(rules.input)
-        this.$refs.designer.addComponent(rules.inputNumber)
-        this.$refs.designer.addComponent(rules.radio)
-        this.$refs.designer.addComponent(rules.checkbox)
-        this.$refs.designer.addComponent(rules.select)
-        this.$refs.designer.addComponent(rules.timePicker)
-        this.$refs.designer.addComponent(rules.datePicker)
-        this.$refs.designer.addComponent(rules['el-button'])
 
         this._getData()
     },
