@@ -8,16 +8,12 @@
                       border
                       fit>
                 <el-table-column label="key"
-                                 prop="key"
-                                 width="50px" />
+                                 prop="key" />
                 <el-table-column label="表单用途"
-                                 prop="name"
-                                 min-width="80px" />
+                                 prop="name" />
                 <el-table-column label="表单描述"
-                                 prop="description"
-                                 min-width="80px" />
-                <el-table-column label="操作"
-                                 width="90px">
+                                 prop="description" />
+                <el-table-column label="操作">
                     <template slot-scope="{ row }">
                         <el-button size="mini"
                                    type="text"
@@ -32,26 +28,21 @@
                        icon="el-icon-edit"
                        @click="selectForm()">添加/切换表单</el-button>
         </div>
-        <el-dialog
-            title="添加/切换表单"
-            :visible.sync="dialogVisible"
-            width="60%">
+        <el-dialog title="添加/切换表单"
+                   :visible.sync="dialogVisible"
+                   width="60%">
             <el-table :data="formList"
                       size="mini"
                       max-height="240"
                       border
                       fit>
                 <el-table-column label="key"
-                                 prop="key"
-                                 width="50px" />
+                                 prop="key" />
                 <el-table-column label="表单用途"
-                                 prop="name"
-                                 min-width="80px" />
+                                 prop="name" />
                 <el-table-column label="表单描述"
-                                 prop="description"
-                                 min-width="80px" />
-                <el-table-column label="操作"
-                                 width="90px">
+                                 prop="description" />
+                <el-table-column label="操作">
                     <template slot-scope="{ row }">
                         <el-button size="mini"
                                    type="text"
@@ -70,7 +61,8 @@
             title="表单预览"
             :visible.sync="innerVisible"
             append-to-body>
-            <form-create :option="formOption" :rule="formRule" />
+            <form-create :option="formOption"
+                         :rule="formRule" />
         </el-dialog>
     </div>
 </template>

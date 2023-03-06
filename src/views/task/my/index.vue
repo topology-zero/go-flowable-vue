@@ -53,15 +53,12 @@
         <el-dialog :visible.sync="showDialog"
                    title="任务详情">
             <el-tabs type="border-card">
-                <el-tab-pane v-if="taskForm" label="提交表单">
-                    <el-form label-width="80px">
-                        <el-form-item v-for="v in taskForm" :key="v.id" :label="v.name">
-                            <el-input v-model="v.value" />
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="completeWithForm">提交任务</el-button>
-                        </el-form-item>
-                    </el-form>
+                <el-tab-pane v-if="detail.formRule && detail.formRule.length > 0"
+                             label="提交表单">
+                    <form-create v-model="fApi"
+                                 :option="detail.formOption"
+                                 :rule="detail.formRule"
+                                 @submit="completeWithForm" />
                 </el-tab-pane>
                 <el-tab-pane label="历史流转">
                     <el-timeline>
@@ -87,16 +84,6 @@
                                         <el-table-column prop="time"
                                                          width="150"
                                                          label="日期" />
-                                        <!-- <el-table-column prop="time"
-                                                         width="80"
-                                                         label="操作">
-                                            <template slot-scope="{row}">
-                                                <el-button type="text"
-                                                           style="color: #ff7c7c;"
-                                                           size="mini"
-                                                           @click="removeComment(row)">删除</el-button>
-                                            </template>
-                                        </el-table-column> -->
                                     </el-table>
                                 </div>
                                 <div v-if="v.attachment && v.attachment.length > 0">
@@ -121,11 +108,6 @@
                                         <el-table-column width="120"
                                                          label="操作">
                                             <template slot-scope="{row}">
-                                                <!-- <el-button type="text"
-                                                           style="color: #ff7c7c;"
-                                                           size="mini"
-                                                           @click="removeAttachment(row)">删除</el-button>
-                                                <el-divider direction="vertical" /> -->
                                                 <el-button type="text"
                                                            style="color: #409EFF;"
                                                            size="mini"
@@ -138,19 +120,6 @@
                         </el-timeline-item>
                     </el-timeline>
                 </el-tab-pane>
-                <!-- <el-tab-pane label="操作日志">
-                    <el-table :data="detail.event"
-                              size="mini">
-                        <el-table-column prop="author"
-                                         width="80"
-                                         label="姓名" />
-                        <el-table-column prop="name"
-                                         label="操作" />
-                        <el-table-column prop="time"
-                                         width="150"
-                                         label="时间" />
-                    </el-table>
-                </el-tab-pane> -->
             </el-tabs>
         </el-dialog>
 
@@ -259,7 +228,8 @@ export default {
             showDialog: false,
             users: [],
             taskId: '',
-            taskForm: [],
+
+            fApi: {},
 
             showDelegateDialog: false,
             delegateForm: {
@@ -281,9 +251,9 @@ export default {
             },
 
             detail: {
-                form: [],
-                history: [],
-                event: []
+                formRule: [],
+                formOption: {},
+                history: []
             },
             fileList: [],
 
@@ -293,6 +263,9 @@ export default {
     },
     created() {
         this.getAdminUser()
+    },
+    mounted() {
+        console.log(this.fApi)
     },
     methods: {
         // 初始化获取列表
@@ -315,8 +288,18 @@ export default {
             this.taskId = row.id
             try {
                 const { data } = await detail(row.processInstanceId)
-                this.detail = data
-                this.taskForm = JSON.parse(JSON.stringify(data.form))
+                this.detail.history = data.history
+                if (data.formRule) {
+                    this.detail.formRule = JSON.parse(data.formRule)
+                    this.detail.formOption = JSON.parse(data.formOption)
+                    // 有按钮的表单就不显示提交按钮
+                    if (data.formRule.indexOf('el-button') != -1) {
+                        this.detail.formOption.submitBtn = false
+                    }
+                } else {
+                    this.detail.formRule = []
+                    this.detail.formOption = {}
+                }
                 this.showDialog = true
             } finally {
                 this.table_loading = false
@@ -422,9 +405,14 @@ export default {
             window.open(`${process.env.VUE_APP_API}/flow/attachment/${row.taskId}/${row.id}/:${row.name}?Authorization=${getToken()}`)
         },
         // 提交表单任务
-        async completeWithForm() {
-            const { message } = await completeWithForm(this.taskId, { 'properties': this.taskForm })
+        async completeWithForm(formData, fApi) {
+            const properties = []
+            for (const i in formData) {
+                properties.push({ id: i, value: formData[i] })
+            }
+            const { message } = await completeWithForm(this.taskId, { properties })
             await this._getData()
+            this.showDialog = false
             this.$message.success(message)
         }
     }
@@ -444,7 +432,7 @@ export default {
 .task-form {
     padding: 0 20px 0 20px;
 }
-.task-form  + .task-form {
+.task-form + .task-form {
     margin-top: 20px;
 }
 </style>>

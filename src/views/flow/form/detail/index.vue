@@ -25,11 +25,9 @@ export default {
         this.$refs.designer.removeMenuItem('rate')
         this.$refs.designer.removeMenuItem('upload')
         this.$refs.designer.removeMenuItem('tree')
-        this.$refs.designer.removeMenuItem('el-button')
         this.$refs.designer.removeMenuItem('cascader')
         this.$refs.designer.removeMenuItem('fc-editor')
         this.$refs.designer.removeMenuItem('el-transfer')
-        this.$refs.designer.removeMenuItem('div')
 
         this.$refs.designer.form.rule = formSetup()
         if (this.$route.query.id) {
@@ -68,6 +66,7 @@ export default {
         this.$refs.designer.addComponent(rules.select)
         this.$refs.designer.addComponent(rules.timePicker)
         this.$refs.designer.addComponent(rules.datePicker)
+        this.$refs.designer.addComponent(rules['el-button'])
 
         this._getData()
     },
