@@ -109,7 +109,7 @@ export default {
         // 预览表单
         async viewForm(row) {
             this.innerVisible = true
-            const { data } = await getDetail(row.id)
+            const { data } = await getDetail(row.key)
             this.formOption = JSON.parse(data.option)
             this.formOption.submitBtn = false
             this.formRule = JSON.parse(data.rule)
