@@ -12,6 +12,7 @@ import formSetup from './form_setup'
 import fieldBaseSetup from './field_base_setup'
 import fieldValidateSetup from './filed_validate_setup'
 import { add, getDetail } from './api'
+import uniqueId from '@form-create/utils/lib/unique'
 
 import rules from './rule'
 
@@ -35,8 +36,9 @@ export default {
             this.$refs.designer.form.rule[0].props = {
                 disabled: true
             }
+        } else {
+            this.$refs.designer.form.rule[0].value = uniqueId()
         }
-        this.$refs.designer.form.rule
         this.$refs.designer.form.option.submitBtn = {
             innerText: '保存',
             size: 'small'
