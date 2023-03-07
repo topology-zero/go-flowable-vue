@@ -94,7 +94,7 @@
                         <p>开始时间: {{ v.createTime }}</p>
                         <p v-if="v.handleTime">完成时间: {{ v.handleTime }}</p>
                         <p v-if="v.useTime > 0">审批用时: {{ formatUseTime(v.useTime) }}</p>
-                        <div v-if="v.formRule ">
+                        <div v-if="v.formRule || v.operateUser">
                             <el-divider content-position="center">表单/审批</el-divider>
                             <el-descriptions v-if="v.operateUser"
                                              class="margin-top"
@@ -208,23 +208,23 @@ export default {
                 const { data } = await detail(row.id)
                 data.history.forEach(v => {
                     if (v.formRule && v.formRule.length > 0) {
-                        // const localRule = v.formRule
+                        const localRule = v.formRule
                         v.formRule = JSON.parse(v.formRule)
                         v.formOption = JSON.parse(v.formOption)
 
                         // 回显表单
                         this._setPropertise(v.formRule, v.formProperties, v.taskId)
-                        // 设置操作
+                        // 回显审批操作
                         this._setOperate(v)
 
-                        // 有审批的表单 不显示提交按钮
+                        // 不显示提交按钮
                         v.formOption.submitBtn = false
 
-                        // 有审批的表单 但是不是在当前节点,不显示审批按钮
-                        // if ((localRule.indexOf('accept') != -1 || localRule.indexOf('reject') != -1) && row.id != v.taskId) {
-                        //     v.formOption.formRule = ''
-                        //     v.formOption.formOption = ''
-                        // }
+                        // 有审批的表单 不显示审批按钮
+                        if (localRule.indexOf('accept') != -1 || localRule.indexOf('reject') != -1) {
+                            v.formRule = ''
+                            v.formOption = ''
+                        }
                     }
                 })
                 this.detail = data.history

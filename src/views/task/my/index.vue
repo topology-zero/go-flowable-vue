@@ -32,7 +32,6 @@
                             <el-dropdown-item @click.native="handleDelegate(row)">转让</el-dropdown-item>
                             <el-dropdown-item @click.native="handleAttachment(row)">上传附件</el-dropdown-item>
                             <el-dropdown-item @click.native="handleComment(row)">添加批注</el-dropdown-item>
-                            <!-- <el-dropdown-item @click.native="complete5(row)">删除</el-dropdown-item> -->
                         </el-dropdown-menu>
                     </el-dropdown>
                 </template>
@@ -63,7 +62,7 @@
                         <p>开始时间: {{ v.createTime }}</p>
                         <p v-if="v.handleTime">完成时间: {{ v.handleTime }}</p>
                         <p v-if="v.useTime > 0">审批用时: {{ formatUseTime(v.useTime) }}</p>
-                        <div v-if="v.formRule ">
+                        <div v-if="v.formRule || v.operateUser">
                             <el-divider content-position="center">表单/审批</el-divider>
                             <el-descriptions v-if="v.operateUser"
                                              class="margin-top"
@@ -96,6 +95,16 @@
                                 <el-table-column prop="time"
                                                  width="150"
                                                  label="日期" />
+                                <!-- <el-table-column prop="time"
+                                                        width="80"
+                                                        label="操作">
+                                        <template slot-scope="{row}">
+                                            <el-button type="text"
+                                                        style="color: #ff7c7c;"
+                                                        size="mini"
+                                                        @click="removeComment(row)">删除</el-button>
+                                        </template>
+                                    </el-table-column> -->
                             </el-table>
                         </div>
                         <div v-if="v.attachment && v.attachment.length > 0">
@@ -120,6 +129,11 @@
                                 <el-table-column width="120"
                                                  label="操作">
                                     <template slot-scope="{row}">
+                                        <!-- <el-button type="text"
+                                                           style="color: #ff7c7c;"
+                                                           size="mini"
+                                                           @click="removeAttachment(row)">删除</el-button>
+                                                <el-divider direction="vertical" /> -->
                                         <el-button type="text"
                                                    style="color: #409EFF;"
                                                    size="mini"
@@ -324,7 +338,7 @@ export default {
                         this._setPropertise(v.formRule, v.formProperties, v.taskId)
                         // 添加点击事件
                         this._setClick(v.formRule)
-                        // 设置操作
+                        // 回显审批操作
                         this._setOperate(v)
 
                         // 有审批的表单 不显示提交按钮
@@ -332,15 +346,15 @@ export default {
                             v.formOption.submitBtn = false
                         }
 
-                        // 有审批的表单 但是不是在当前节点,不显示审批按钮
-                        if ((localRule.indexOf('accept') != -1 || localRule.indexOf('reject') != -1) && this.taskId != v.taskId) {
-                            v.formOption.formRule = ''
-                            v.formOption.formOption = ''
-                        }
-
                         // 提交过的表单 不显示提交按钮
                         if (v.handleTime && v.handleTime.length > 0) {
                             v.formOption.submitBtn = false
+                        }
+
+                        // 有审批的表单 但是不是在当前节点,不显示审批按钮
+                        if ((localRule.indexOf('accept') != -1 || localRule.indexOf('reject') != -1) && this.taskId != v.taskId) {
+                            v.formRule = ''
+                            v.formOption = ''
                         }
                     }
                 })
@@ -450,7 +464,7 @@ export default {
             window.open(`${process.env.VUE_APP_API}/flow/attachment/${row.taskId}/${row.id}/:${row.name}?Authorization=${getToken()}`)
         },
         // 提交表单任务
-        async completeWithForm(formData, fApi) {
+        async completeWithForm(formData) {
             const properties = []
             for (const i in formData) {
                 properties.push({ id: i, value: formData[i] })
