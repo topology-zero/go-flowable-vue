@@ -119,7 +119,7 @@ export function param2Obj(url) {
 export function formatUseTime(time) {
     time = parseInt(time / 1000)
     if (time < 1) {
-        return ''
+        return '1秒'
     } else if (time < 60) {
         return time + '秒'
     } else if (time < 3600) {

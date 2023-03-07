@@ -21,7 +21,7 @@ import alert from './alert'
 import span from './span'
 import space from './space'
 import tab from './tab'
-import accpet from './accpet'
+import accpet from './accept'
 import reject from './reject'
 import editor from './editor'
 

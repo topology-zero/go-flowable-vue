@@ -93,16 +93,26 @@
                         <p v-if="v.handelUser">操作人: {{ v.handelUser }}</p>
                         <p>开始时间: {{ v.createTime }}</p>
                         <p v-if="v.handleTime">完成时间: {{ v.handleTime }}</p>
-                        <p v-if="v.useTime.length > 0">审批用时: {{ formatUseTime(v.useTime) }}</p>
-                        <div v-if="v.form && v.form.length > 0">
-                            <el-divider content-position="center">填写表单</el-divider>
-                            <el-form label-width="120px" size="mini">
-                                <el-form-item v-for="vv in v.form"
-                                              :key="vv.id"
-                                              :label="vv.name">
-                                    <el-input v-model="vv.value" disabled />
-                                </el-form-item>
-                            </el-form>
+                        <p v-if="v.useTime > 0">审批用时: {{ formatUseTime(v.useTime) }}</p>
+                        <div v-if="v.formRule ">
+                            <el-divider content-position="center">表单/审批</el-divider>
+                            <el-descriptions v-if="v.operateUser"
+                                             class="margin-top"
+                                             title="审批意见"
+                                             :column="2"
+                                             border>
+                                <el-descriptions-item label="审批人">{{ v.operateUser }}</el-descriptions-item>
+                                <el-descriptions-item label="审批结果">
+                                    <el-tag v-if="v.operateType == '同意'" type="success">{{ v.operateType }}</el-tag>
+                                    <el-tag v-else type="danger">{{ v.operateType }}</el-tag>
+                                </el-descriptions-item>
+                                <el-descriptions-item label="审批意见">{{ v.operateMemo }}</el-descriptions-item>
+                            </el-descriptions>
+                            <form-create v-else
+                                         ref="formCreate"
+                                         :option="v.formOption"
+                                         :rule="v.formRule" />
+
                         </div>
                         <div v-if="v.comment && v.comment.length > 0">
                             <el-divider content-position="center">备注</el-divider>
@@ -194,9 +204,29 @@ export default {
         // 获取任务详情
         async handleDetail(row) {
             this.table_loading = true
-            await this.$nextTick()
             try {
                 const { data } = await detail(row.id)
+                data.history.forEach(v => {
+                    if (v.formRule && v.formRule.length > 0) {
+                        // const localRule = v.formRule
+                        v.formRule = JSON.parse(v.formRule)
+                        v.formOption = JSON.parse(v.formOption)
+
+                        // 回显表单
+                        this._setPropertise(v.formRule, v.formProperties, v.taskId)
+                        // 设置操作
+                        this._setOperate(v)
+
+                        // 有审批的表单 不显示提交按钮
+                        v.formOption.submitBtn = false
+
+                        // 有审批的表单 但是不是在当前节点,不显示审批按钮
+                        // if ((localRule.indexOf('accept') != -1 || localRule.indexOf('reject') != -1) && row.id != v.taskId) {
+                        //     v.formOption.formRule = ''
+                        //     v.formOption.formOption = ''
+                        // }
+                    }
+                })
                 this.detail = data.history
                 this.showDialog = true
             } finally {
@@ -217,6 +247,50 @@ export default {
             } else {
                 [this.params.startTime, this.params.endTime] = [this.rangeTime[0], this.rangeTime[1]]
             }
+        },
+        // 写入表单变量
+        _setPropertise(formRule, formProperties, taskId) {
+            formRule.forEach(v => {
+                if (v.field) {
+                    v.props = { disabled: true }
+                    for (const i in formProperties) {
+                        if (`${taskId}|${v.field}` == formProperties[i].id) {
+                            v.value = formProperties[i].value
+                        }
+                    }
+                }
+                if (v.children) {
+                    this._setPropertise(v.children, formProperties, taskId)
+                }
+            })
+        },
+        _setOperate(v) {
+            for (const i in v.formProperties) {
+                if (`${v.taskId}|operate_user` == v.formProperties[i].id) {
+                    v.operateUser = v.formProperties[i].value
+                }
+                if (`${v.taskId}|operate_type` == v.formProperties[i].id) {
+                    v.operateType = v.formProperties[i].value
+                }
+                if (`${v.taskId}|operate_memo` == v.formProperties[i].id) {
+                    v.operateMemo = v.formProperties[i].value
+                }
+            }
+        },
+        // 为同意,驳回添加点击事件
+        _setClick(formRule) {
+            formRule.forEach(v => {
+                if (v.on && v.on.click) {
+                    if (v.on.click == 'formCreateAccept') {
+                        v.on.click = this.formCreateAccept
+                    } else if (v.on.click == 'formCreateReject') {
+                        v.on.click = this.formCreateReject
+                    }
+                }
+                if (v.children) {
+                    this._setClick(v.children)
+                }
+            })
         }
     }
 

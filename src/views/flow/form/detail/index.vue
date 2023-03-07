@@ -37,13 +37,13 @@ export default {
         this.$refs.designer.addComponent(rules.select)
         this.$refs.designer.addComponent(rules.timePicker)
         this.$refs.designer.addComponent(rules.datePicker)
-        this.$refs.designer.addComponent(rules.accpet)
+        this.$refs.designer.addComponent(rules.accept)
         this.$refs.designer.addComponent(rules.reject)
 
         this.$refs.designer.addMenu({
             name: 'opt',
             title: '审批组件',
-            list: [rules.accpet, rules.reject]
+            list: [rules.accept, rules.reject]
         })
 
         this.$refs.designer.form.rule = formSetup()

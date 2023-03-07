@@ -51,76 +51,86 @@
         </div>
 
         <el-dialog :visible.sync="showDialog"
-                   title="任务详情">
-            <el-tabs type="border-card">
-                <el-tab-pane v-if="detail.formRule && detail.formRule.length > 0"
-                             label="提交表单">
-                    <form-create v-model="fApi"
-                                 :option="detail.formOption"
-                                 :rule="detail.formRule"
-                                 @submit="completeWithForm" />
-                </el-tab-pane>
-                <el-tab-pane label="历史流转">
-                    <el-timeline>
-                        <el-timeline-item v-for="v in detail.history"
-                                          :key="v.id"
-                                          :timestamp="v.createTime"
-                                          placement="top">
-                            <el-card>
-                                <p>执行步骤: {{ v.actionName }}</p>
-                                <p v-if="v.handelUser">操作人: {{ v.handelUser }}</p>
-                                <p>开始时间: {{ v.createTime }}</p>
-                                <p v-if="v.handleTime">完成时间: {{ v.handleTime }}</p>
-                                <p v-if="v.useTime.length > 0">审批用时: {{ formatUseTime(v.useTime) }}</p>
-                                <div v-if="v.comment && v.comment.length > 0">
-                                    <el-divider content-position="center">备注</el-divider>
-                                    <el-table :data="v.comment"
-                                              size="mini">
-                                        <el-table-column prop="author"
-                                                         width="80"
-                                                         label="姓名" />
-                                        <el-table-column prop="message"
-                                                         label="备注" />
-                                        <el-table-column prop="time"
-                                                         width="150"
-                                                         label="日期" />
-                                    </el-table>
-                                </div>
-                                <div v-if="v.attachment && v.attachment.length > 0">
-                                    <el-divider content-position="center">附件</el-divider>
-                                    <el-table :data="v.attachment"
-                                              size="mini">
-                                        <el-table-column prop="author"
-                                                         width="80"
-                                                         label="上传人" />
-                                        <el-table-column prop="name"
-                                                         label="名称">
-                                            <template slot-scope="{row}">
-                                                <el-tooltip effect="dark"
-                                                            :content="row.description"
-                                                            placement="top-start" />
-                                                <div>{{ row.name }}</div>
-                                            </template>
-                                        </el-table-column>
-                                        <el-table-column prop="time"
-                                                         width="150"
-                                                         label="上传时间" />
-                                        <el-table-column width="120"
-                                                         label="操作">
-                                            <template slot-scope="{row}">
-                                                <el-button type="text"
-                                                           style="color: #409EFF;"
-                                                           size="mini"
-                                                           @click="downloadAttachment(row)">下载</el-button>
-                                            </template>
-                                        </el-table-column>
-                                    </el-table>
-                                </div>
-                            </el-card>
-                        </el-timeline-item>
-                    </el-timeline>
-                </el-tab-pane>
-            </el-tabs>
+                   title="历史流转">
+            <el-timeline>
+                <el-timeline-item v-for="v in detail"
+                                  :key="v.id"
+                                  :timestamp="v.createTime"
+                                  placement="top">
+                    <el-card>
+                        <p>执行步骤: {{ v.actionName }}</p>
+                        <p v-if="v.handelUser">操作人: {{ v.handelUser }}</p>
+                        <p>开始时间: {{ v.createTime }}</p>
+                        <p v-if="v.handleTime">完成时间: {{ v.handleTime }}</p>
+                        <p v-if="v.useTime > 0">审批用时: {{ formatUseTime(v.useTime) }}</p>
+                        <div v-if="v.formRule ">
+                            <el-divider content-position="center">表单/审批</el-divider>
+                            <el-descriptions v-if="v.operateUser"
+                                             class="margin-top"
+                                             title="审批意见"
+                                             :column="2"
+                                             border>
+                                <el-descriptions-item label="审批人">{{ v.operateUser }}</el-descriptions-item>
+                                <el-descriptions-item label="审批结果">
+                                    <el-tag v-if="v.operateType == '同意'" type="success">{{ v.operateType }}</el-tag>
+                                    <el-tag v-else type="danger">{{ v.operateType }}</el-tag>
+                                </el-descriptions-item>
+                                <el-descriptions-item label="审批意见">{{ v.operateMemo }}</el-descriptions-item>
+                            </el-descriptions>
+                            <form-create v-else
+                                         ref="formCreate"
+                                         :option="v.formOption"
+                                         :rule="v.formRule"
+                                         @submit="completeWithForm" />
+
+                        </div>
+                        <div v-if="v.comment && v.comment.length > 0">
+                            <el-divider content-position="center">备注</el-divider>
+                            <el-table :data="v.comment"
+                                      size="mini">
+                                <el-table-column prop="author"
+                                                 width="80"
+                                                 label="姓名" />
+                                <el-table-column prop="message"
+                                                 label="备注" />
+                                <el-table-column prop="time"
+                                                 width="150"
+                                                 label="日期" />
+                            </el-table>
+                        </div>
+                        <div v-if="v.attachment && v.attachment.length > 0">
+                            <el-divider content-position="center">附件</el-divider>
+                            <el-table :data="v.attachment"
+                                      size="mini">
+                                <el-table-column prop="author"
+                                                 width="80"
+                                                 label="上传人" />
+                                <el-table-column prop="name"
+                                                 label="名称">
+                                    <template slot-scope="{row}">
+                                        <el-tooltip effect="dark"
+                                                    :content="row.description"
+                                                    placement="top-start" />
+                                        <div>{{ row.name }}</div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="time"
+                                                 width="150"
+                                                 label="上传时间" />
+                                <el-table-column width="120"
+                                                 label="操作">
+                                    <template slot-scope="{row}">
+                                        <el-button type="text"
+                                                   style="color: #409EFF;"
+                                                   size="mini"
+                                                   @click="downloadAttachment(row)">下载</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </el-card>
+                </el-timeline-item>
+            </el-timeline>
         </el-dialog>
 
         <el-dialog :visible.sync="showDelegateDialog"
@@ -212,12 +222,32 @@
                            @click="commentSubmit()">确定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog :visible.sync="showOperateDialog"
+                   title="审批意见">
+            <el-form ref="elOperateForm"
+                     :model="operateForm"
+                     label-width="100px">
+                <el-form-item label="意见"
+                              prop="message">
+                    <el-input v-model="operateForm.message"
+                              type="textarea"
+                              placeholder="请输入内容" />
+                </el-form-item>
+
+            </el-form>
+            <div slot="footer">
+                <el-button @click="showOperateDialog = false">取消</el-button>
+                <el-button type="primary"
+                           @click="operateSubmit()">确定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import { pageMixin } from '@/utils/mixin'
-import { getList, detail, complete, getAdminUser, delegate, addAttachment, delAttachment, addComment, delComment, completeWithForm } from './api'
+import { getList, detail, complete, getAdminUser, delegate, addAttachment, delAttachment, addComment, delComment, completeWithForm, accept, reject } from './api'
 import { formatUseTime } from '@/utils/index'
 import { getToken } from '@/utils/auth'
 export default {
@@ -227,9 +257,8 @@ export default {
         return {
             showDialog: false,
             users: [],
+            detail: [],
             taskId: '',
-
-            fApi: {},
 
             showDelegateDialog: false,
             delegateForm: {
@@ -237,6 +266,7 @@ export default {
             },
 
             showUploadDialog: false,
+            fileList: [],
             uploadForm: {
                 fileType: 1,
                 name: '',
@@ -250,12 +280,11 @@ export default {
                 message: ''
             },
 
-            detail: {
-                formRule: [],
-                formOption: {},
-                history: []
+            showOperateDialog: false,
+            operateAccept: true,
+            operateForm: {
+                message: ''
             },
-            fileList: [],
 
             token: getToken(),
             prefix: process.env.VUE_APP_API
@@ -263,9 +292,6 @@ export default {
     },
     created() {
         this.getAdminUser()
-    },
-    mounted() {
-        console.log(this.fApi)
     },
     methods: {
         // 初始化获取列表
@@ -288,18 +314,37 @@ export default {
             this.taskId = row.id
             try {
                 const { data } = await detail(row.processInstanceId)
-                this.detail.history = data.history
-                if (data.formRule) {
-                    this.detail.formRule = JSON.parse(data.formRule)
-                    this.detail.formOption = JSON.parse(data.formOption)
-                    // 有按钮的表单就不显示提交按钮
-                    if (data.formRule.indexOf('el-button') != -1) {
-                        this.detail.formOption.submitBtn = false
+                data.history.forEach(v => {
+                    if (v.formRule && v.formRule.length > 0) {
+                        const localRule = v.formRule
+                        v.formRule = JSON.parse(v.formRule)
+                        v.formOption = JSON.parse(v.formOption)
+
+                        // 回显表单
+                        this._setPropertise(v.formRule, v.formProperties, v.taskId)
+                        // 添加点击事件
+                        this._setClick(v.formRule)
+                        // 设置操作
+                        this._setOperate(v)
+
+                        // 有审批的表单 不显示提交按钮
+                        if (localRule.indexOf('accept') != -1 || localRule.indexOf('reject') != -1) {
+                            v.formOption.submitBtn = false
+                        }
+
+                        // 有审批的表单 但是不是在当前节点,不显示审批按钮
+                        if ((localRule.indexOf('accept') != -1 || localRule.indexOf('reject') != -1) && this.taskId != v.taskId) {
+                            v.formOption.formRule = ''
+                            v.formOption.formOption = ''
+                        }
+
+                        // 提交过的表单 不显示提交按钮
+                        if (v.handleTime && v.handleTime.length > 0) {
+                            v.formOption.submitBtn = false
+                        }
                     }
-                } else {
-                    this.detail.formRule = []
-                    this.detail.formOption = {}
-                }
+                })
+                this.detail = data.history
                 this.showDialog = true
             } finally {
                 this.table_loading = false
@@ -414,9 +459,80 @@ export default {
             await this._getData()
             this.showDialog = false
             this.$message.success(message)
+        },
+        // 同意
+        async formCreateAccept() {
+            this.showOperateDialog = true
+            this.operateForm.message = ''
+            this.operateAccept = true
+        },
+        // 驳回
+        async formCreateReject() {
+            this.showOperateDialog = true
+            this.operateForm.message = ''
+            this.operateAccept = false
+        },
+        // 同意/驳回 提交
+        async operateSubmit() {
+            await this.$refs.elOperateForm.validate()
+            if (this.operateAccept) {
+                await accept(this.taskId, this.operateForm)
+            } else {
+                await reject(this.taskId, this.operateForm)
+            }
+
+            this.$message.success('成功')
+            this.showOperateDialog = false
+            this.showDialog = false
+            this._getData()
+        },
+        // 写入表单变量
+        _setPropertise(formRule, formProperties, taskId) {
+            formRule.forEach(v => {
+                if (v.field) {
+                    if (this.taskId != taskId) {
+                        v.props = { disabled: true }
+                    }
+                    for (const i in formProperties) {
+                        if (`${taskId}|${v.field}` == formProperties[i].id) {
+                            v.value = formProperties[i].value
+                        }
+                    }
+                }
+                if (v.children) {
+                    this._setPropertise(v.children, formProperties, taskId)
+                }
+            })
+        },
+        _setOperate(v) {
+            for (const i in v.formProperties) {
+                if (`${v.taskId}|operate_user` == v.formProperties[i].id) {
+                    v.operateUser = v.formProperties[i].value
+                }
+                if (`${v.taskId}|operate_type` == v.formProperties[i].id) {
+                    v.operateType = v.formProperties[i].value
+                }
+                if (`${v.taskId}|operate_memo` == v.formProperties[i].id) {
+                    v.operateMemo = v.formProperties[i].value
+                }
+            }
+        },
+        // 为同意,驳回添加点击事件
+        _setClick(formRule) {
+            formRule.forEach(v => {
+                if (v.on && v.on.click) {
+                    if (v.on.click == 'formCreateAccept') {
+                        v.on.click = this.formCreateAccept
+                    } else if (v.on.click == 'formCreateReject') {
+                        v.on.click = this.formCreateReject
+                    }
+                }
+                if (v.children) {
+                    this._setClick(v.children)
+                }
+            })
         }
     }
-
 }
 </script>
 

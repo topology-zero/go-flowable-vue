@@ -1,14 +1,14 @@
 export default {
     icon: 'icon-button',
     label: '同意',
-    name: 'accpet',
+    name: 'accept',
     mask: false,
     rule() {
         return {
             type: 'el-button',
             children: ['同意'],
             on: {
-                click: 'this.formCreateAccpet'
+                click: 'formCreateAccept'
             },
             props: {
                 type: 'primary'

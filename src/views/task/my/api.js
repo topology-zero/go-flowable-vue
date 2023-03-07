@@ -74,3 +74,19 @@ export function delComment(taskId, commentId) {
         method: 'delete'
     })
 }
+
+export function accept(taskId, data) {
+    return request({
+        url: '/flow/task_accept/' + taskId,
+        method: 'post',
+        data
+    })
+}
+
+export function reject(taskId, data) {
+    return request({
+        url: '/flow/task_reject/' + taskId,
+        method: 'post',
+        data
+    })
+}

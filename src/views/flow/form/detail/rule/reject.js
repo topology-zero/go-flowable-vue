@@ -8,7 +8,7 @@ export default {
             type: 'el-button',
             children: ['驳回'],
             on: {
-                click: 'this.formCreateAccpet'
+                click: 'formCreateReject'
             },
             props: {
                 type: 'danger'
