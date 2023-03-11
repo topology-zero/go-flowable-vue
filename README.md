@@ -1,99 +1,94 @@
-# vue-admin-template
+### go-flowable-vue
 
-English | [简体中文](./README-zh.md)
+go-flowable-admin 工作流 UI 项目
 
-> A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
+使用 vue + element-ui + axios
 
-**Live demo:** http://panjiachen.github.io/vue-admin-template
+### 使用
 
+本地开发环境如下
 
-**The current version is `v4.0+` build on `vue-cli`. If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/PanJiaChen/vue-admin-template/tree/tag/3.11.0), it does not rely on `vue-cli`**
+npm 8.19.3
 
-<p align="center">
-  <b>SPONSORED BY</b>
-</p>
-<p align="center">
-   <a href="https://finclip.com?from=vue_element" title="FinClip" target="_blank">
-      <img height="200px" src="https://gitee.com/panjiachen/gitee-cdn/raw/master/vue%E8%B5%9E%E5%8A%A9.png" title="FinClip">
-   </a>
-</p>
-
-## Build Setup
+node 16.19.1
 
 ```bash
-# clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+# 克隆项目
+git clone https://github.com/topology-zero/go-flowable-admin.git
 
-# enter the project directory
+# 进入项目目录
 cd vue-admin-template
 
-# install dependency
+# 安装依赖
 npm install
 
-# develop
+# 建议不要直接使用 cnpm 安装以来，会有各种诡异的 bug。可以通过如下操作解决 npm 下载速度慢的问题
+npm install --registry=https://registry.npm.taobao.org
+
+# 启动服务
 npm run dev
 ```
 
-This will automatically open http://localhost:9528
+### 项目展示
 
-## Build
+添加流程
 
-```bash
-# build for test environment
-npm run build:stage
+![](https://tc.masterjoy.top/flowable/%E6%B7%BB%E5%8A%A0%E6%B5%81%E7%A8%8B.gif?imageView2/0/format/webp/q/75)
 
-# build for production environment
-npm run build:prod
-```
+添加表单
 
-## Advanced
+![](https://tc.masterjoy.top/flowable/%E6%B7%BB%E5%8A%A0%E8%A1%A8%E5%8D%95.gif?imageView2/0/format/webp/q/75)
 
-```bash
-# preview the release environment effect
-npm run preview
+添加审批表单
 
-# preview the release environment effect + static resource analysis
-npm run preview -- --report
+![](https://tc.masterjoy.top/flowable/%E6%B7%BB%E5%8A%A0%E5%AE%A1%E6%89%B9%E8%A1%A8%E5%8D%95.gif?imageView2/0/format/webp/q/75)
 
-# code format check
-npm run lint
+用户任务添加表单
 
-# code format check and auto fix
-npm run lint -- --fix
-```
+![](https://tc.masterjoy.top/flowable/%E7%94%A8%E6%88%B7%E4%BB%BB%E5%8A%A1%E6%B7%BB%E5%8A%A0%E8%A1%A8%E5%8D%95.gif?imageView2/0/format/webp/q/75)
 
-Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
+任务指派
 
-## Demo
+![](https://tc.masterjoy.top/flowable/%E4%BB%BB%E5%8A%A1%E6%8C%87%E6%B4%BE.gif?imageView2/0/format/webp/q/75)
 
-![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
+设置审批节点
 
-## Extra
+![](https://tc.masterjoy.top/flowable/%E8%AE%BE%E7%BD%AE%E5%AE%A1%E6%89%B9%E8%8A%82%E7%82%B9.gif?imageView2/0/format/webp/q/75)
 
-If you want router permission && generate menu by user roles , you can use this branch [permission-control](https://github.com/PanJiaChen/vue-admin-template/tree/permission-control)
+启动流程
 
-For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
+![](https://tc.masterjoy.top/flowable/%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.gif?imageView2/0/format/webp/q/75)
 
-## Related Project
+表单填写与审批
 
-- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+![](https://tc.masterjoy.top/flowable/%E8%A1%A8%E5%8D%95%E5%A1%AB%E5%86%99%E4%B8%8E%E5%AE%A1%E6%89%B9.gif?imageView2/0/format/webp/q/75)
 
-- [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
+查看流程流转
 
-- [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
+![](https://tc.masterjoy.top/flowable/%E6%9F%A5%E7%9C%8B%E6%B5%81%E7%A8%8B%E6%B5%81%E8%BD%AC.gif?imageView2/0/format/webp/q/75)
 
-- [awesome-project](https://github.com/PanJiaChen/vue-element-admin/issues/2312)
+任务转让
 
-## Browsers support
+![](https://tc.masterjoy.top/flowable/%E4%BB%BB%E5%8A%A1%E8%BD%AC%E8%AE%A9.gif?imageView2/0/format/webp/q/75)
 
-Modern browsers and Internet Explorer 10+.
+任务完成
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
+可以按需放在自己想放的地方
 
-## License
+![](https://tc.masterjoy.top/flowable/%E7%9B%B4%E6%8E%A5%E5%AE%8C%E6%88%90%E4%BB%BB%E5%8A%A1.gif?imageView2/0/format/webp/q/75)
 
-[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
+任务添加批注
 
-Copyright (c) 2017-present PanJiaChen
+可以按需放在自己想放的地方
+
+![](https://tc.masterjoy.top/flowable/%E6%B7%BB%E5%8A%A0%E6%89%B9%E6%B3%A8.gif?imageView2/0/format/webp/q/75)
+
+任务添加附件
+
+可以按需放在自己想放的地方
+
+![](https://tc.masterjoy.top/flowable/%E4%B8%8A%E4%BC%A0%E9%99%84%E4%BB%B6.gif?imageView2/0/format/webp/q/75)
+
+下载任务附件
+
+![](https://tc.masterjoy.top/flowable/%E4%B8%8B%E8%BD%BD%E9%99%84%E4%BB%B6.gif?imageView2/0/format/webp/q/75)
